@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-logistpulse}
+      POSTGRES_USER: ${DB_USER:-logistpulse}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-logistpulse_dev}
+    volumes:
+      - logistpulse_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-logistpulse} -d ${DB_NAME:-logistpulse}"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  app:
+    build: .
+    environment:
+      APP_PORT: ${APP_PORT:-8081}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-logistpulse}
+      DB_USER: ${DB_USER:-logistpulse}
+      DB_PASSWORD: ${DB_PASSWORD:-logistpulse_dev}
+    ports:
+      - "${APP_PORT:-8081}:${APP_PORT:-8081}"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  logistpulse_pgdata:
