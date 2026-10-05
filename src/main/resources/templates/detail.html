@@ -1,1 +1,36 @@
-<!doctype html><html xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><title>Detalle</title><link rel="stylesheet" th:href="@{/css/app.css}"></head><body><nav><span class="brand">LOGISTPULSE</span><a href="/">Volver</a></nav><main><div class="card"><h1 th:text="${order.orderNumber}"></h1><p><b>Cliente:</b> <span th:text="${order.customerName}"></span></p><p><b>Destino:</b> <span th:text="${order.destination}"></span></p><p><b>Estado:</b> <span class="badge" th:text="${order.status}"></span></p><h3>Ítems</h3><ul><li th:each="i:${order.items}" th:text="${i.product+' x '+i.quantity}"></li></ul><form th:action="@{'/orders/'+${order.id}+'/status'}" method="post"><select name="status"><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select><button>Actualizar estado</button></form></div><div class="card"><h2>Historial</h2><table><thead><tr><th>De</th><th>A</th><th>Usuario</th><th>Fecha</th></tr></thead><tbody><tr th:each="h:${history}"><td th:text="${h.fromStatus}"></td><td th:text="${h.toStatus}"></td><td th:text="${h.changedBy}"></td><td th:text="${h.changedAt}"></td></tr></tbody></table></div></main></body></html>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><title>Detalle</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body>
+<nav><span class="brand">LOGISTPULSE</span><a href="/">Volver</a></nav>
+<main>
+  <div class="card">
+    <h1 th:text="${order.orderNumber}"></h1>
+    <p><b>Cliente:</b> <span th:text="${order.customerName}"></span></p>
+    <p><b>Destino:</b> <span th:text="${order.destination}"></span></p>
+    <p><b>Estado:</b> <span class="badge" th:text="${order.status}"></span></p>
+    <h3>Ítems</h3>
+    <ul><li th:each="i:${order.items}" th:text="${i.product+' x '+i.quantity}"></li></ul>
+
+    <form th:if="${!#lists.isEmpty(statuses)}" th:action="@{'/orders/'+${order.id}+'/status'}" method="post">
+      <label>Siguiente estado permitido</label>
+      <select name="status"><option th:each="s:${statuses}" th:value="${s}" th:text="${s}"></option></select>
+      <button>Actualizar estado</button>
+    </form>
+
+    <form th:if="${canAssign}" th:action="@{'/orders/'+${order.id}+'/assign'}" method="post">
+      <label>Asignar despacho</label>
+      <input name="assignee" required placeholder="Responsable de despacho">
+      <button>Asignar y despachar</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Historial</h2>
+    <table><thead><tr><th>De</th><th>A</th><th>Usuario</th><th>Fecha</th></tr></thead>
+      <tbody><tr th:each="h:${history}"><td th:text="${h.fromStatus}"></td><td th:text="${h.toStatus}"></td><td th:text="${h.changedBy}"></td><td th:text="${h.changedAt}"></td></tr></tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

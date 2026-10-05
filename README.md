@@ -2,13 +2,24 @@
 
 Proyecto integrador de Diseño de Sistemas (USFQ). LOGISTPULSE implementa un flujo mínimo de gestión de pedidos con arquitectura MVC, persistencia PostgreSQL, autenticación, historial de estados y Docker.
 
-## Alcance demostrable
+## Alcance
+
+### Incluye
 - Login con Spring Security.
 - Registro de pedidos e ítems.
 - Consulta de pedidos y detalle.
 - Actualización controlada de estado con historial.
 - REST API de pedidos.
 - `GET /health` público con HTTP 200.
+- Persistencia PostgreSQL.
+- Ejecución reproducible mediante Docker Compose.
+
+### Fuera de alcance de esta etapa
+- Optimización automática de rutas.
+- GPS en tiempo real.
+- Integración con transportistas externos.
+- Predicción avanzada de ETA.
+- Aplicación móvil productiva.
 
 ## Stack
 Java 21, Spring Boot 3.5.6, Spring MVC, Thymeleaf, Spring Data JPA, Spring Security, PostgreSQL 16, Maven y Docker Compose.
@@ -31,7 +42,9 @@ docker compose up --build
 ```
 Abrir `http://localhost:8081`.
 
-Usuarios demo:
+## Credenciales de demostración académica
+Estas credenciales son exclusivamente locales y de demostración. No corresponden a usuarios ni secretos reales.
+
 - `operator` / `operator123`
 - `supervisor` / `supervisor123`
 
@@ -65,10 +78,28 @@ mvn test
 ```
 GitHub Actions ejecuta tests en pushes y PR a `main`.
 
-## GitHub Flow
+## Estrategia GitHub Flow
 Ver `docs/BRANCHING.md`. Usar ramas `feature/<hu>-descripcion`, commits descriptivos, Pull Request, revisión de otro integrante y merge.
+
+## Evidencia requerida antes de la entrega
+Guardar en `../evidencias/LOGISTPULSE/`:
+- captura del repositorio y ramas;
+- captura y enlace del Pull Request fusionado;
+- evidencia de revisión/comentario de otro integrante;
+- `docker compose up --build`;
+- `docker compose ps`;
+- respuesta `GET /health` HTTP 200;
+- respuesta exitosa de la operación del Sprint 1.
 
 ## Troubleshooting
 - Puerto 8081 ocupado: cambiar `APP_PORT`.
 - DB no saludable: revisar `docker compose logs db`.
 - Reinicio limpio: `docker compose down -v`.
+
+## Correcciones de calidad incluidas en esta versión
+- Lombok eliminado del código para evitar dependencia de generación de getters/builders durante compilación.
+- `/health` comprueba conexión real a la base de datos con `SELECT 1`.
+- CSRF permanece activo para vistas web y solo se ignora en la API REST de demostración.
+- Se añadieron pruebas automatizadas del flujo principal del Sprint.
+- La asignación de despacho está expuesta por REST y por la vista web.
+- La interfaz solo muestra transiciones de estado permitidas y se registra auditoría explícita.
